@@ -65,7 +65,10 @@ class Task(RulesModel):
         pass
 
     def approve(self, user):
-        approval = Approval.objects.get(approver=user, task=self)
+        try:
+            approval = Approval.objects.get(approver=user, task=self)
+        except Approval.DoesNotExist:
+            raise PermissionDenied
         approval.is_approved=True
         approval.save()
         try:
