@@ -15,29 +15,29 @@ def test_task(db, task_factory, user_factory):
     for user in more_approvers:
         task.approvers.add(user)
 
-    # Список ожидаемых лиц
-    approver.approve(task)
+    # После одного согласования, список ожидаемых лиц должен содержать всех, кроме согласовавшего
+    task.approve(approver)
     assert set(task.pending_approvers()) == set(more_approvers)
 
     # После, как тикет согласован, назначенное лицо на исполнение тикета, 
     # переводит в статус “выполняется”. Был согласован полностью -> выполняется.
     for approver in task.approvers.all():
-        approver.approve(task)
+        task.approve(approver)
     assert task.status == Task.STATUS_INPROGRESS
 
     # После того, как назначенное лицо считает, что тикет выполнен, переводит тикет в статус - выполнено
-    task.assignee.complete(task)
+    task.complete(task.assignee)
     assert task.status == Task.STATUS_COMPLETED
 
     # Автор тикета, проверяет работу и отправляет “на доработку”`
-    task.author.request_changes(task)
+    task.request_changes(task.author)
     assert task.status == Task.STATUS_CHANGES_REQUESTED
 
     # Назначенное лицо снова выполняет тикет
-    task.assignee.complete(task)
+    task.complete(task.assignee)
     assert task.status == Task.STATUS_COMPLETED
 
     # В конце, задачу может закрыть суперпользователь только
     superuser = user_factory(is_superuser=True)
-    superuser.close(task)
+    task.close(superuser)
     assert task.status == Task.STATUS_CLOSED
