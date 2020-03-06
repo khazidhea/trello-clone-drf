@@ -5,13 +5,13 @@ from django.core.exceptions import PermissionDenied
 from src.apps.tasks.models import Task
 
 
-def test_task_new_ok(db, task_factory, user_factory):
+def test_task_new_ok(db, task_factory):
     # Статус новый, когда тикет только создан.
     task = task_factory()
     assert task.status == Task.STATUS_NEW
 
 
-def test_task_pending_ok(db, task_factory, user_factory):
+def test_task_pending_ok(db, task_factory):
     # Если у тикета есть согласующие лица, то переходит в статус - Ждет согласования
     task = task_factory.pending()
     assert task.status == Task.STATUS_PENDING
@@ -28,26 +28,26 @@ def test_task_pending_approvers_ok(db, task_factory, user_factory):
     assert len(task.pending_approvers()) == 2
 
 
-def test_task_inprogress_ok(db, task_factory, user_factory):
+def test_task_inprogress_ok(db, task_factory):
     # После, как тикет согласован, назначенное лицо на исполнение тикета, 
     # переводит в статус “выполняется”. Был согласован полностью -> выполняется.
     task = task_factory.inprogress()
     assert task.status == Task.STATUS_INPROGRESS
 
 
-def test_task_completed_ok(db, task_factory, user_factory):
+def test_task_completed_ok(db, task_factory):
     # После того, как назначенное лицо считает, что тикет выполнен, переводит тикет в статус - выполнено
     task = task_factory.completed()
     assert task.status == Task.STATUS_COMPLETED
 
 
-def test_task_changes_requested_ok(db, task_factory, user_factory):
+def test_task_changes_requested_ok(db, task_factory):
     # Автор тикета, проверяет работу и отправляет “на доработку”
     task = task_factory.changes_requested()
     assert task.status == Task.STATUS_CHANGES_REQUESTED
 
 
-def test_task_changes_requested_complete_again_ok(db, task_factory, user_factory):
+def test_task_changes_requested_complete_again_ok(db, task_factory):
     # Назначенное лицо снова выполняет тикет
     task = task_factory.changes_requested()
     task.complete(task.assignee)
