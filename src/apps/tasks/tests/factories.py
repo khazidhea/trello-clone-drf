@@ -23,7 +23,7 @@ class TaskFactory(factory.django.DjangoModelFactory):
     def inprogress():
         task = TaskFactory()
         for user in UserFactory.create_batch(3):
-            task.approvers.add(user) 
+            task.approvers.add(user)
             task.approve(user)
         return task
 

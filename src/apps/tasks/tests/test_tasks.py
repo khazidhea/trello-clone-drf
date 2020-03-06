@@ -29,7 +29,7 @@ def test_task_pending_approvers_ok(db, task_factory, user_factory):
 
 
 def test_task_inprogress_ok(db, task_factory):
-    # После, как тикет согласован, назначенное лицо на исполнение тикета, 
+    # После, как тикет согласован, назначенное лицо на исполнение тикета,
     # переводит в статус “выполняется”. Был согласован полностью -> выполняется.
     task = task_factory.inprogress()
     assert task.status == Task.STATUS_INPROGRESS

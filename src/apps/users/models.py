@@ -1,7 +1,5 @@
 from django.contrib.auth.models import AbstractUser
 
-from src.apps.tasks.models import Approval
-
 
 class User(AbstractUser):
     def request_changes(self, task):

@@ -69,13 +69,13 @@ class Task(RulesModel):
             approval = Approval.objects.get(approver=user, task=self)
         except Approval.DoesNotExist:
             raise PermissionDenied
-        approval.is_approved=True
+        approval.is_approved = True
         approval.save()
         try:
             self.to_status_inprogress()
         except TransitionNotAllowed:
             pass
-    
+
     @transition(
         field=status, source=STATUS_PENDING, target=STATUS_INPROGRESS,
         conditions=[
@@ -91,7 +91,7 @@ class Task(RulesModel):
         self.transition_with_permission(self.to_status_completed, user)
 
     @transition(
-        field=status, 
+        field=status,
         source=[STATUS_INPROGRESS, STATUS_CHANGES_REQUESTED], target=STATUS_COMPLETED,
         permission='tasks.can_complete_task'
     )
@@ -113,7 +113,7 @@ class Task(RulesModel):
         self.transition_with_permission(self.to_status_closed, user)
 
     @transition(
-        field=status, 
+        field=status,
         source='*', target=STATUS_CLOSED,
         permission='tasks.can_close_task'
     )
