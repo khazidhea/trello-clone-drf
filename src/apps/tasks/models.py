@@ -125,6 +125,10 @@ class Task(RulesModel):
 
 
 class Approval(models.Model):
-    approver = models.ForeignKey('users.User', on_delete=models.CASCADE)
-    task = models.ForeignKey('tasks.Task', on_delete=models.CASCADE)
+    approver = models.ForeignKey(
+        'users.User', related_name='approvals', on_delete=models.CASCADE
+    )
+    task = models.ForeignKey(
+        'tasks.Task', related_name='approvals', on_delete=models.CASCADE
+    )
     is_approved = models.BooleanField(default=False)

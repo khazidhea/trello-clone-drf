@@ -1,3 +1,6 @@
+from src.apps.tasks.models import Task
+
+
 def test_task_new(db, client, user_factory):
     author = user_factory()
     assignee = user_factory()
@@ -35,3 +38,15 @@ def test_task_delete_approvers(db, client, user_factory, task_factory):
     response = client.delete('/api/tasks/1/approvers/{}/'.format(approver.id))
     assert response.status_code == 204
     assert len(task.approvers.all()) == len_before - 1
+
+
+def test_task_approve(db, client, task_factory):
+    task = task_factory.pending()
+    client.force_authenticate(user=task.approvers.first())
+    response = client.post('/api/tasks/1/approve/')
+    assert response.status_code == 200
+    assert response.json()['approver'] == task.approvers.first().id
+    assert response.json()['is_approved'] is True
+    assert task.approvals.first().is_approved
+    # get status fresh from db
+    assert Task.objects.get(id=task.id).status == Task.STATUS_INPROGRESS

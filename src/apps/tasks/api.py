@@ -1,11 +1,18 @@
 from rest_framework import viewsets, serializers, status
+from rest_framework.decorators import action
 from rest_framework.mixins import RetrieveModelMixin, ListModelMixin
 from rest_framework.response import Response
 from rest_framework_extensions.mixins import NestedViewSetMixin
 from rest_framework_extensions.routers import ExtendedSimpleRouter
 
 from src.apps.users.models import User
-from .models import Task
+from .models import Task, Approval
+
+
+class ApprovalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Approval
+        fields = ['approver', 'is_approved']
 
 
 class ApproverSerializer(serializers.ModelSerializer):
@@ -50,6 +57,16 @@ class TaskSerializer(serializers.ModelSerializer):
 class TaskViewSet(viewsets.ModelViewSet):
     serializer_class = TaskSerializer
     queryset = Task.objects.all()
+
+    @action(detail=True, methods=['post'])
+    def approve(self, request, pk=None):
+        task = self.get_object()
+        task.approve(request.user)
+        approval = task.approvals.get(approver=request.user)
+        return Response(
+            ApprovalSerializer(approval).data,
+            status=status.HTTP_200_OK
+        )
 
 
 router = ExtendedSimpleRouter()
