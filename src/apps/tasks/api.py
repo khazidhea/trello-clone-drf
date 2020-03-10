@@ -71,7 +71,6 @@ class TaskViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'])
     def complete(self, request, pk=None):
         task = self.get_object()
-        print(request.user.has_perm('tasks.can_complete_task', task))
         task.complete(request.user)
         return Response(
             self.get_serializer(task).data,
