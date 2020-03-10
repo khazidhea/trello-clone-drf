@@ -77,3 +77,13 @@ def test_task_changes_requested_complete_again(db, client, task_factory):
     assert response.status_code == 200
     # get fresh status from db
     assert Task.objects.get(id=task.id).status == Task.STATUS_COMPLETED
+
+
+def test_task_closed(db, client, task_factory, user_factory):
+    task = task_factory.completed()
+    superuser = user_factory(is_superuser=True)
+    client.force_authenticate(user=superuser)
+    response = client.post('/api/tasks/1/close/')
+    assert response.status_code == 200
+    # get fresh status from db
+    assert Task.objects.get(id=task.id).status == Task.STATUS_CLOSED

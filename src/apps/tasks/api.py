@@ -86,6 +86,15 @@ class TaskViewSet(viewsets.ModelViewSet):
             status=status.HTTP_200_OK
         )
 
+    @action(detail=True, methods=['post'])
+    def close(self, request, pk=None):
+        task = self.get_object()
+        task.close(request.user)
+        return Response(
+            self.get_serializer(task).data,
+            status=status.HTTP_200_OK
+        )
+
 
 router = ExtendedSimpleRouter()
 router.register(
