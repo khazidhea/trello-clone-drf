@@ -50,3 +50,11 @@ def test_task_approve(db, client, task_factory):
     assert task.approvals.first().is_approved
     # get status fresh from db
     assert Task.objects.get(id=task.id).status == Task.STATUS_INPROGRESS
+
+
+def test_task_complete(db, client, task_factory):
+    task = task_factory.pending()
+    client.force_authenticate(user=task.assignee)
+    response = client.post('/api/tasks/1/complete/')
+    assert response.status_code == 200
+    assert task.status == Task.STATUS_COMPLETED
