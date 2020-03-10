@@ -57,6 +57,7 @@ class Task(RulesModel):
     def transition_with_permission(self, method, user):
         if has_transition_perm(method, user):
             method()
+            self.save()
         else:
             raise PermissionDenied
 
@@ -73,6 +74,7 @@ class Task(RulesModel):
         approval.save()
         try:
             self.to_status_inprogress()
+            self.save()
         except TransitionNotAllowed:
             pass
 
