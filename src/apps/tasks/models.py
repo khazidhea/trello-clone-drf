@@ -55,7 +55,6 @@ class Task(RulesModel):
     status = FSMField(default=STATUS_NEW, choices=STATUS_CHOICES, protected=True)
 
     def transition_with_permission(self, method, user):
-        user.has_perm(Task.get_perm('can_complete'))
         if has_transition_perm(method, user):
             method()
             self.save()

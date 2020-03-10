@@ -59,3 +59,21 @@ def test_task_complete(db, client, task_factory):
     assert response.status_code == 200
     # get fresh status from db
     assert Task.objects.get(id=task.id).status == Task.STATUS_COMPLETED
+
+
+def test_task_changes_requested(db, client, task_factory):
+    task = task_factory.completed()
+    client.force_authenticate(user=task.author)
+    response = client.post('/api/tasks/1/changes/')
+    assert response.status_code == 200
+    # get fresh status from db
+    assert Task.objects.get(id=task.id).status == Task.STATUS_CHANGES_REQUESTED
+
+
+def test_task_changes_requested_complete_again(db, client, task_factory):
+    task = task_factory.changes_requested()
+    client.force_authenticate(user=task.assignee)
+    response = client.post('/api/tasks/1/complete/')
+    assert response.status_code == 200
+    # get fresh status from db
+    assert Task.objects.get(id=task.id).status == Task.STATUS_COMPLETED
