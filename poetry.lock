@@ -91,6 +91,17 @@ version = "3.11.0"
 django = ">=1.11"
 
 [[package]]
+category = "main"
+description = "Extensions for Django REST Framework"
+name = "drf-extensions"
+optional = false
+python-versions = "*"
+version = "0.6.0"
+
+[package.dependencies]
+djangorestframework = ">=3.9.3"
+
+[[package]]
 category = "dev"
 description = "Discover and load entry points from installed packages."
 name = "entrypoints"
@@ -466,7 +477,7 @@ python-versions = "*"
 version = "0.1.8"
 
 [metadata]
-content-hash = "51a0bfff1e173c175503d787cc5c32d3a6ef26746eb3eb9ef0884c1f166fdc16"
+content-hash = "544b78f5348320d59107a0bca040a4f53cb0ace6570a408251fd0b4317837b6f"
 python-versions = "^3.8"
 
 [metadata.files]
@@ -505,6 +516,10 @@ django-fsm = [
 djangorestframework = [
     {file = "djangorestframework-3.11.0-py3-none-any.whl", hash = "sha256:05809fc66e1c997fd9a32ea5730d9f4ba28b109b9da71fccfa5ff241201fd0a4"},
     {file = "djangorestframework-3.11.0.tar.gz", hash = "sha256:e782087823c47a26826ee5b6fa0c542968219263fb3976ec3c31edab23a4001f"},
+]
+drf-extensions = [
+    {file = "drf-extensions-0.6.0.tar.gz", hash = "sha256:9a76d59c8ecc2814860e94a0c96a26a824e392cd4550f2efa928af43c002a750"},
+    {file = "drf_extensions-0.6.0-py2.py3-none-any.whl", hash = "sha256:a04cf188d27fdc13a1083a3ac9e4d72d3d93fcef76b3584191489c75d550c10d"},
 ]
 entrypoints = [
     {file = "entrypoints-0.3-py2.py3-none-any.whl", hash = "sha256:589f874b313739ad35be6e0cd7efde2a4e9b6fea91edcc34e58ecbb8dbe56d19"},
