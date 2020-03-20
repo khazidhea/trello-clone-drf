@@ -11,6 +11,7 @@ djangorestframework = "^3.11.0"
 rules = "^2.2"
 django-fsm = "^2.7.0"
 drf_extensions = "^0.6.0"
+django-cors-headers = "^3.2.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.3.5"
