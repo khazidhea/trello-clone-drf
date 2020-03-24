@@ -8,10 +8,9 @@ authors = ["Azamat Galimzhanov <azamat@galimzhanov.com>"]
 python = "^3.8"
 django = "^2.2"
 djangorestframework = "^3.11.0"
-rules = "^2.2"
-django-fsm = "^2.7.0"
 drf_extensions = "^0.6.0"
 django-cors-headers = "^3.2.1"
+attrs = "^19.3.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.3.5"
@@ -20,6 +19,8 @@ pytest-factoryboy = "^2.0.3"
 ipython = "^7.13.0"
 flake8 = "^3.7.9"
 pytest-flake8 = "^1.0.4"
+mypy = "^0.770"
+transitions = "^0.8.0"
 
 [build-system]
 requires = ["poetry>=0.12"]

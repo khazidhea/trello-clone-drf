@@ -7,6 +7,7 @@ from rest_framework_extensions.routers import ExtendedSimpleRouter
 
 from src.apps.users.models import User
 from .models import Task, Approval
+from .services import TaskService
 
 
 class ApprovalSerializer(serializers.ModelSerializer):
@@ -61,8 +62,7 @@ class TaskViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'])
     def approve(self, request, pk=None):
         task = self.get_object()
-        task.approve(request.user)
-        approval = task.approvals.get(approver=request.user)
+        approval = TaskService(task).approve(request.user.id)
         return Response(
             ApprovalSerializer(approval).data,
             status=status.HTTP_200_OK
@@ -71,7 +71,7 @@ class TaskViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'])
     def complete(self, request, pk=None):
         task = self.get_object()
-        task.complete(request.user)
+        TaskService(task).complete(request.user.id)
         return Response(
             self.get_serializer(task).data,
             status=status.HTTP_200_OK
@@ -80,7 +80,7 @@ class TaskViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'])
     def changes(self, request, pk=None):
         task = self.get_object()
-        task.request_changes(request.user)
+        TaskService(task).request_changes(request.user.id)
         return Response(
             self.get_serializer(task).data,
             status=status.HTTP_200_OK
@@ -89,7 +89,7 @@ class TaskViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'])
     def close(self, request, pk=None):
         task = self.get_object()
-        task.close(request.user)
+        TaskService(task).close(request.user.id)
         return Response(
             self.get_serializer(task).data,
             status=status.HTTP_200_OK
