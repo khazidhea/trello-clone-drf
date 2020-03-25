@@ -10,7 +10,7 @@ version = "0.1.0"
 [[package]]
 category = "dev"
 description = "Atomic file writes."
-marker = "sys_platform == \"win32\""
+marker = "python_version >= \"3.5\" and sys_platform == \"win32\" or sys_platform == \"win32\""
 name = "atomicwrites"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
@@ -41,7 +41,7 @@ version = "0.1.0"
 [[package]]
 category = "dev"
 description = "Cross-platform colored terminal text."
-marker = "sys_platform == \"win32\""
+marker = "python_version >= \"3.5\" and sys_platform == \"win32\" or sys_platform == \"win32\""
 name = "colorama"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
@@ -134,6 +134,14 @@ version = "4.0.1"
 [package.dependencies]
 python-dateutil = ">=2.4"
 text-unidecode = "1.3"
+
+[[package]]
+category = "dev"
+description = "A platform independent file lock."
+name = "filelock"
+optional = false
+python-versions = "*"
+version = "3.0.12"
 
 [[package]]
 category = "dev"
@@ -430,6 +438,25 @@ pytest = ">=3.5"
 
 [[package]]
 category = "dev"
+description = "Mypy static type checker plugin for Pytest"
+name = "pytest-mypy"
+optional = false
+python-versions = "~=3.4"
+version = "0.6.0"
+
+[package.dependencies]
+filelock = ">=3.0"
+
+[package.dependencies.mypy]
+python = ">=3.8"
+version = ">=0.700"
+
+[package.dependencies.pytest]
+python = ">=3.5"
+version = ">=3.5"
+
+[[package]]
+category = "dev"
 description = "Extensions to the standard Python datetime module"
 name = "python-dateutil"
 optional = false
@@ -527,7 +554,7 @@ python-versions = "*"
 version = "0.1.8"
 
 [metadata]
-content-hash = "9de654e60c7f41e94afefcdc6c87748f122e95cfa8b9884c7157cdde64fda98b"
+content-hash = "bd7f2ccba3c6ae38374bd07e21f2426828278e640ac7167064713f71fc75f2a2"
 python-versions = "^3.8"
 
 [metadata.files]
@@ -582,6 +609,10 @@ factory-boy = [
 faker = [
     {file = "Faker-4.0.1-py3-none-any.whl", hash = "sha256:ee24608768549c2c69e593e9d7a3b53c9498ae735534243ec8390cae5d529f8b"},
     {file = "Faker-4.0.1.tar.gz", hash = "sha256:440d68fe0e46c1658b1975b2497abe0c24a7f772e3892253f31e713ffcc48965"},
+]
+filelock = [
+    {file = "filelock-3.0.12-py3-none-any.whl", hash = "sha256:929b7d63ec5b7d6b71b0fa5ac14e030b3f70b75747cef1b10da9b879fef15836"},
+    {file = "filelock-3.0.12.tar.gz", hash = "sha256:18d82244ee114f543149c66a6e0c14e9c4f8a1044b5cdaadd0f82159d6a6ff59"},
 ]
 flake8 = [
     {file = "flake8-3.7.9-py2.py3-none-any.whl", hash = "sha256:49356e766643ad15072a789a20915d3c91dc89fd313ccd71802303fd67e4deca"},
@@ -692,6 +723,10 @@ pytest-factoryboy = [
 pytest-flake8 = [
     {file = "pytest-flake8-1.0.4.tar.gz", hash = "sha256:4d225c13e787471502ff94409dcf6f7927049b2ec251c63b764a4b17447b60c0"},
     {file = "pytest_flake8-1.0.4-py2.py3-none-any.whl", hash = "sha256:d7e2b6b274a255b7ae35e9224c85294b471a83b76ecb6bd53c337ae977a499af"},
+]
+pytest-mypy = [
+    {file = "pytest-mypy-0.6.0.tar.gz", hash = "sha256:ea5da19d7343d4ccd98c3fe39cc30dee2743b9fbf00999b2a863e3ead78e353c"},
+    {file = "pytest_mypy-0.6.0-py3-none-any.whl", hash = "sha256:f55dfbdd9e6749f5af3896e8ad813b611c3acadcec16ba728738777ccf9ce1d4"},
 ]
 python-dateutil = [
     {file = "python-dateutil-2.8.1.tar.gz", hash = "sha256:73ebfe9dbf22e832286dafa60473e4cd239f8592f699aa5adaf10050e6e1823c"},
