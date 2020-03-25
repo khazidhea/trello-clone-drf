@@ -1,9 +1,8 @@
-from functools import wraps
-
 from django.core.exceptions import PermissionDenied
 
 from transitions import Machine, MachineError
 
+from src.utils import permission_required, transition
 from src.apps.users.models import User
 from .models import Task, Approval
 
@@ -20,21 +19,10 @@ def is_superuser(task: Task, user_id: int) -> bool:
     return User.objects.get(id=user_id).is_superuser
 
 
-def permission_decorator(check):
-    def decorator(fn):
-        @wraps(fn)
-        def permission_wrapper(*args, **kwargs):
-            instance = args[0]
-            user_id = args[1]
-            if check(instance.task, user_id):
-                return fn(*args, **kwargs)
-            else:
-                raise PermissionDenied
-        return permission_wrapper
-    return decorator
-
-
 class TaskService:
+    task: Task
+    state: str
+
     def __init__(self, task: Task):
         self.task = task
         states = [status[0] for status in Task.STATUS_CHOICES]
@@ -45,49 +33,43 @@ class TaskService:
             auto_transitions=False,
             after_state_change='save',
         )
-        self.machine.add_transition(
-            trigger='to_pending',
-            source=Task.STATUS_NEW,
-            dest=Task.STATUS_PENDING
-        )
-        self.machine.add_transition(
-            trigger='to_inprogress',
-            source=Task.STATUS_PENDING,
-            dest=Task.STATUS_INPROGRESS,
-            conditions=['is_approved']
-        )
-        self.machine.add_transition(
-            trigger='to_completed',
-            source=[Task.STATUS_INPROGRESS, Task.STATUS_CHANGES_REQUESTED],
-            dest=Task.STATUS_COMPLETED
-        )
-        self.machine.add_transition(
-            trigger='to_changes_requested',
-            source=Task.STATUS_COMPLETED,
-            dest=Task.STATUS_CHANGES_REQUESTED
-        )
-        self.machine.add_transition(
-            trigger='to_closed',
-            source='*',
-            dest=Task.STATUS_CLOSED
-        )
 
     def save(self) -> None:
         self.task.status = self.state
         self.task.save()
 
+    @transition(source=Task.STATUS_NEW, dest=Task.STATUS_PENDING)
+    def to_pending(self):
+        pass
+
+    @transition(source=Task.STATUS_PENDING, dest=Task.STATUS_INPROGRESS, conditions=['is_approved'])
+    def to_inprogress(self):
+        pass
+
+    @transition(source=[Task.STATUS_INPROGRESS, Task.STATUS_CHANGES_REQUESTED], dest=Task.STATUS_COMPLETED)
+    def to_completed(self):
+        pass
+
+    @transition(source=Task.STATUS_COMPLETED, dest=Task.STATUS_CHANGES_REQUESTED)
+    def to_changes_requested(self):
+        pass
+
+    @transition(source='*', dest=Task.STATUS_CLOSED)
+    def to_closed(self):
+        pass
+
     def is_approved(self) -> bool:
         return all(Approval.objects.filter(task=self.task).values_list('is_approved', flat=True))
 
-    @permission_decorator(is_assignee)
+    @permission_required(is_assignee)
     def complete(self, user_id: int) -> None:
         self.to_completed()
 
-    @permission_decorator(is_author)
+    @permission_required(is_author)
     def request_changes(self, user_id: int) -> None:
         self.to_changes_requested()
 
-    @permission_decorator(is_superuser)
+    @permission_required(is_superuser)
     def close(self, user_id: int) -> None:
         self.to_closed()
 
